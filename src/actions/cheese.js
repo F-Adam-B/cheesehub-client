@@ -35,4 +35,32 @@ export const fetchCheeseError = error => ({
     type: FETCH_CHEESE_ERROR,
 })
 
+export const ADD_CHEESE_SUCCESS = 'ADD_CHEESE_SUCCESS';
+export const addCheeseSuccess = cheeses => ({
+    type: ADD_CHEESE_SUCCESS,
+    cheeses
+})
 
+export const ADD_CHEESE = 'ADD_CHEESE';
+export const addCheese = (cheese) => dispatch => {
+    dispatch(fetchCheeseRequest());
+    return fetch(`${API_BASE_URL}/api/cheeses`,
+    {
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(cheese)
+    })
+    .then(res => {
+        if(!res.ok) {
+            return Promise.reject(res.statusText)
+        }
+            return res.json();
+    }).then(
+        cheeses => {
+            dispatch(addCheeseSuccess(cheeses))
+        }
+    )
+    .catch(err => dispatch(fetchCheeseError(err)))
+
+}
+ 
